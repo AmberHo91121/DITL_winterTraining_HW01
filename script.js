@@ -238,71 +238,54 @@ function showExperiencePopup(year, yearElement) {
     experiencePopup.appendChild(closeBtn);
     experiencePopup.dataset.currentYear = year;
     
-    // Check if mobile device (768px and below)
-    const isMobile = window.innerWidth <= 768;
+    // Set fixed positioning first (temporarily hidden to measure)
+    experiencePopup.style.position = 'fixed';
+    experiencePopup.style.left = '0';
+    experiencePopup.style.top = '0';
+    experiencePopup.style.opacity = '0';
+    experiencePopup.style.visibility = 'visible';
+    experiencePopup.classList.add('show');
     
-    if (isMobile) {
-        // On mobile, use fixed positioning centered on screen
-        experiencePopup.style.position = 'fixed';
-        experiencePopup.style.left = '50%';
-        experiencePopup.style.top = '50%';
-        experiencePopup.style.transform = 'translate(-50%, -50%)';
-        experiencePopup.style.marginTop = '0';
-        experiencePopup.style.marginBottom = '0';
-    } else {
-        // On desktop, position relative to year element
-        const rect = yearElement.getBoundingClientRect();
-        const sectionRect = document.querySelector('.experience-section').getBoundingClientRect();
-        let leftPosition = rect.left - sectionRect.left;
-        
-        // Temporarily show popup to get its dimensions (with opacity 0 to avoid flash)
-        experiencePopup.style.opacity = '0';
-        experiencePopup.style.visibility = 'visible';
-        experiencePopup.style.left = `${leftPosition}px`;
-        
-        // Calculate popup dimensions
-        const popupWidth = experiencePopup.offsetWidth;
-        const popupHeight = experiencePopup.offsetHeight;
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const padding = 20; // Padding from viewport edges
-        
-        // Check right boundary (rect.left is relative to viewport)
-        const popupRight = rect.left + popupWidth;
-        if (popupRight > viewportWidth - padding) {
-            leftPosition = viewportWidth - popupWidth - padding - sectionRect.left;
-        }
-        
-        // Check left boundary
-        if (leftPosition < padding) {
-            leftPosition = padding;
-        }
-        
-        // Check bottom boundary
-        const popupBottom = rect.bottom + popupHeight + 20; // 20px margin-top
-        if (popupBottom > viewportHeight - padding) {
-            // Position popup above the element instead
-            experiencePopup.style.top = 'auto';
-            experiencePopup.style.bottom = '100%';
-            experiencePopup.style.marginTop = '0';
-            experiencePopup.style.marginBottom = '20px';
-        } else {
-            experiencePopup.style.top = '100%';
-            experiencePopup.style.bottom = 'auto';
-            experiencePopup.style.marginTop = '20px';
-            experiencePopup.style.marginBottom = '0';
-        }
-        
-        // Set final position
-        experiencePopup.style.left = `${leftPosition}px`;
+    // Get actual popup dimensions
+    const popupWidth = experiencePopup.offsetWidth;
+    const popupHeight = experiencePopup.offsetHeight;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const padding = 20;
+    
+    // Calculate initial position (centered near the clicked element)
+    const rect = yearElement.getBoundingClientRect();
+    let initialX = rect.left + (rect.width / 2) - (popupWidth / 2);
+    let initialY = rect.bottom + 20;
+    
+    // Ensure popup stays within viewport
+    if (initialX < padding) {
+        initialX = padding;
     }
+    if (initialX + popupWidth > viewportWidth - padding) {
+        initialX = viewportWidth - popupWidth - padding;
+    }
+    if (initialY + popupHeight > viewportHeight - padding) {
+        initialY = rect.top - popupHeight - 20;
+    }
+    if (initialY < padding) {
+        initialY = padding;
+    }
+    
+    // Set final position
+    experiencePopup.style.transform = `translate(${initialX}px, ${initialY}px)`;
+    experiencePopup.style.marginTop = '0';
+    experiencePopup.style.marginBottom = '0';
     
     // Show popup
     experiencePopup.style.opacity = '';
     experiencePopup.style.visibility = '';
-    experiencePopup.classList.add('show');
+    
+    // Initialize drag functionality
+    makeDraggable(experiencePopup);
     
     // Show overlay on mobile
+    const isMobile = window.innerWidth <= 768;
     if (isMobile) {
         const overlay = document.getElementById('popupOverlay');
         if (overlay) {
@@ -319,11 +302,13 @@ function hideExperiencePopup() {
     if (overlay) {
         overlay.classList.remove('show');
     }
-    // Reset positioning
+    // Reset positioning and styles
     experiencePopup.style.position = '';
     experiencePopup.style.left = '';
     experiencePopup.style.top = '';
     experiencePopup.style.transform = '';
+    experiencePopup.style.cursor = '';
+    experiencePopup.style.userSelect = '';
 }
 
 // Initialize Future section
@@ -419,71 +404,54 @@ function showFuturePopup(term, termElement) {
     futurePopup.appendChild(closeBtn);
     futurePopup.dataset.currentTerm = term;
     
-    // Check if mobile device (768px and below)
-    const isMobile = window.innerWidth <= 768;
+    // Set fixed positioning first (temporarily hidden to measure)
+    futurePopup.style.position = 'fixed';
+    futurePopup.style.left = '0';
+    futurePopup.style.top = '0';
+    futurePopup.style.opacity = '0';
+    futurePopup.style.visibility = 'visible';
+    futurePopup.classList.add('show');
     
-    if (isMobile) {
-        // On mobile, use fixed positioning centered on screen
-        futurePopup.style.position = 'fixed';
-        futurePopup.style.left = '50%';
-        futurePopup.style.top = '50%';
-        futurePopup.style.transform = 'translate(-50%, -50%)';
-        futurePopup.style.marginTop = '0';
-        futurePopup.style.marginBottom = '0';
-    } else {
-        // On desktop, position relative to term element
-        const rect = termElement.getBoundingClientRect();
-        const sectionRect = document.querySelector('.future-section').getBoundingClientRect();
-        let leftPosition = rect.left - sectionRect.left;
-        
-        // Temporarily show popup to get its dimensions (with opacity 0 to avoid flash)
-        futurePopup.style.opacity = '0';
-        futurePopup.style.visibility = 'visible';
-        futurePopup.style.left = `${leftPosition}px`;
-        
-        // Calculate popup dimensions
-        const popupWidth = futurePopup.offsetWidth;
-        const popupHeight = futurePopup.offsetHeight;
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const padding = 20; // Padding from viewport edges
-        
-        // Check right boundary (rect.left is relative to viewport)
-        const popupRight = rect.left + popupWidth;
-        if (popupRight > viewportWidth - padding) {
-            leftPosition = viewportWidth - popupWidth - padding - sectionRect.left;
-        }
-        
-        // Check left boundary
-        if (leftPosition < padding) {
-            leftPosition = padding;
-        }
-        
-        // Check bottom boundary
-        const popupBottom = rect.bottom + popupHeight + 20; // 20px margin-top
-        if (popupBottom > viewportHeight - padding) {
-            // Position popup above the element instead
-            futurePopup.style.top = 'auto';
-            futurePopup.style.bottom = '100%';
-            futurePopup.style.marginTop = '0';
-            futurePopup.style.marginBottom = '20px';
-        } else {
-            futurePopup.style.top = '100%';
-            futurePopup.style.bottom = 'auto';
-            futurePopup.style.marginTop = '20px';
-            futurePopup.style.marginBottom = '0';
-        }
-        
-        // Set final position
-        futurePopup.style.left = `${leftPosition}px`;
+    // Get actual popup dimensions
+    const popupWidth = futurePopup.offsetWidth;
+    const popupHeight = futurePopup.offsetHeight;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const padding = 20;
+    
+    // Calculate initial position (centered near the clicked element)
+    const rect = termElement.getBoundingClientRect();
+    let initialX = rect.left + (rect.width / 2) - (popupWidth / 2);
+    let initialY = rect.bottom + 20;
+    
+    // Ensure popup stays within viewport
+    if (initialX < padding) {
+        initialX = padding;
     }
+    if (initialX + popupWidth > viewportWidth - padding) {
+        initialX = viewportWidth - popupWidth - padding;
+    }
+    if (initialY + popupHeight > viewportHeight - padding) {
+        initialY = rect.top - popupHeight - 20;
+    }
+    if (initialY < padding) {
+        initialY = padding;
+    }
+    
+    // Set final position
+    futurePopup.style.transform = `translate(${initialX}px, ${initialY}px)`;
+    futurePopup.style.marginTop = '0';
+    futurePopup.style.marginBottom = '0';
     
     // Show popup
     futurePopup.style.opacity = '';
     futurePopup.style.visibility = '';
-    futurePopup.classList.add('show');
+    
+    // Initialize drag functionality
+    makeDraggable(futurePopup);
     
     // Show overlay on mobile
+    const isMobile = window.innerWidth <= 768;
     if (isMobile) {
         const overlay = document.getElementById('popupOverlay');
         if (overlay) {
@@ -500,11 +468,13 @@ function hideFuturePopup() {
     if (overlay) {
         overlay.classList.remove('show');
     }
-    // Reset positioning
+    // Reset positioning and styles
     futurePopup.style.position = '';
     futurePopup.style.left = '';
     futurePopup.style.top = '';
     futurePopup.style.transform = '';
+    futurePopup.style.cursor = '';
+    futurePopup.style.userSelect = '';
 }
 
 // Initialize overlay click handler
@@ -516,6 +486,129 @@ function initOverlay() {
             hideFuturePopup();
         });
     }
+}
+
+// Drag functionality for popups
+function makeDraggable(popupElement) {
+    let isDragging = false;
+    let currentX = 0;
+    let currentY = 0;
+    let initialX = 0;
+    let initialY = 0;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    // Get initial position from transform
+    function getInitialPosition() {
+        const transform = popupElement.style.transform;
+        if (transform && transform !== 'none') {
+            const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+            if (matches) {
+                xOffset = parseFloat(matches[1]) || 0;
+                yOffset = parseFloat(matches[2]) || 0;
+            }
+        } else {
+            const rect = popupElement.getBoundingClientRect();
+            xOffset = rect.left;
+            yOffset = rect.top;
+        }
+    }
+
+    function dragStart(e) {
+        // Don't drag if clicking on close button, links, or buttons
+        if (e.target.classList.contains('popup-close-btn') || 
+            e.target.closest('a') || 
+            (e.target.closest('button') && !e.target.classList.contains('popup-close-btn'))) {
+            return;
+        }
+
+        // Only allow dragging from the top area (header region)
+        const rect = popupElement.getBoundingClientRect();
+        const clickY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+        const relativeY = clickY - rect.top;
+        
+        // Only allow dragging from top 50px (header area) or if clicking on h2/h3 in that area
+        const isInHeaderArea = relativeY <= 50;
+        const isHeaderElement = e.target.tagName === 'H2' || e.target.tagName === 'H3';
+        
+        if (!isInHeaderArea && !isHeaderElement) {
+            return;
+        }
+
+        getInitialPosition();
+
+        if (e.type === "touchstart") {
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
+        } else {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+
+        isDragging = true;
+        popupElement.style.cursor = 'grabbing';
+        popupElement.style.userSelect = 'none';
+        e.preventDefault();
+    }
+
+    function dragEnd(e) {
+        if (isDragging) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+            popupElement.style.cursor = 'grab';
+            popupElement.style.userSelect = '';
+        }
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            e.preventDefault();
+            
+            if (e.type === "touchmove") {
+                currentX = e.touches[0].clientX - initialX;
+                currentY = e.touches[0].clientY - initialY;
+            } else {
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+            }
+
+            xOffset = currentX;
+            yOffset = currentY;
+
+            // Constrain to viewport
+            const rect = popupElement.getBoundingClientRect();
+            const maxX = window.innerWidth - rect.width;
+            const maxY = window.innerHeight - rect.height;
+
+            xOffset = Math.max(0, Math.min(xOffset, maxX));
+            yOffset = Math.max(0, Math.min(yOffset, maxY));
+
+            setTranslate(xOffset, yOffset, popupElement);
+        }
+    }
+
+    function setTranslate(xPos, yPos, el) {
+        el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+    }
+
+    // Get initial position after popup is shown
+    setTimeout(() => {
+        getInitialPosition();
+    }, 100);
+
+    // Mouse events
+    popupElement.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+
+    // Touch events for mobile
+    popupElement.addEventListener('touchstart', dragStart, { passive: false });
+    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('touchend', dragEnd);
+
+    // Set initial cursor style
+    popupElement.style.cursor = 'grab';
 }
 
 // Initialize when DOM is loaded
