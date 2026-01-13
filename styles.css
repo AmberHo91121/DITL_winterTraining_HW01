@@ -4,6 +4,28 @@
     box-sizing: border-box;
 }
 
+/* 滑鼠追蹤效果 */
+.cursor-trail {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255, 87, 0, 1) 0%, rgba(255, 87, 0, 0.8) 30%, rgba(255, 87, 0, 0.4) 60%, rgba(255, 87, 0, 0) 100%);
+    box-shadow: 0 0 20px rgba(255, 87, 0, 0.5);
+    transition: opacity 0.3s ease, transform 0.1s ease;
+}
+
+.cursor-trail.trail {
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, rgba(255, 87, 0, 0.6) 0%, rgba(255, 87, 0, 0.3) 50%, rgba(255, 87, 0, 0) 100%);
+    box-shadow: 0 0 10px rgba(255, 87, 0, 0.3);
+    transition: opacity 0.5s ease, transform 0.2s ease;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
     background-color: #ffffff;
@@ -271,72 +293,103 @@ body {
     visibility: visible;
 }
 
+/* 統一所有 Future Popup 內容樣式 */
 .future-popup h2 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
     color: #ffffff;
-    font-weight: normal;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .future-popup h3 {
     font-size: 1.1rem;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    margin-top: 0;
     color: #ffffff;
-    font-weight: normal;
+    font-weight: 500;
+    line-height: 1.4;
 }
 
 .future-popup p {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 12px;
     color: #ffffff;
-    font-weight: normal;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 .future-popup p strong {
-    font-weight: bold;
+    font-weight: 600;
     color: #ffffff;
 }
 
+/* 統一列表樣式 */
 .future-popup ul {
     list-style: none;
     padding-left: 0;
+    margin: 0;
 }
 
-.future-popup > ul > li {
-    font-size: 1.1rem;
+/* 頂層列表容器樣式（Mid Term, Long Term 和 Short Term 的目標容器） */
+.future-popup > ul,
+.future-popup .plan-goal {
+    margin-top: 20px;
+    padding: 18px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 4px;
+}
+
+.future-popup > ul:first-of-type {
+    margin-top: 0;
+}
+
+.future-popup .plan-goal:first-of-type {
+    margin-top: 0;
+}
+
+/* 統一列表項樣式 */
+.future-popup > ul > li,
+.future-popup .plan-goal ul > li {
+    font-size: 1rem;
     margin-bottom: 10px;
-    padding-left: 20px;
+    padding-left: 22px;
     position: relative;
+    color: #ffffff;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
-.future-popup > ul > li::before {
+.future-popup > ul > li::before,
+.future-popup .plan-goal ul > li::before {
     content: '•';
     position: absolute;
     left: 0;
     color: #ff6b35;
     font-weight: bold;
+    font-size: 1.2rem;
 }
 
-.future-popup .plan-goal {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: none;
-}
-
-.future-popup .plan-goal h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
+/* 嵌套列表樣式 */
 .future-popup .plan-goal ul {
     margin-left: 0;
-    margin-top: 0;
+    margin-top: 10px;
+    padding: 0;
+    background-color: transparent;
 }
 
 .future-popup .plan-goal ul ul {
     margin-left: 20px;
-    margin-top: 10px;
+    margin-top: 8px;
+    padding: 0;
+}
+
+.future-popup .plan-goal ul ul li {
+    font-size: 0.95rem;
+    color: #cccccc;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 /* Popup Close Button */
@@ -364,10 +417,6 @@ body {
     color: #ff6b35;
 }
 
-.future-popup .plan-goal ul ul li {
-    font-size: 1.1rem;
-    color: #cccccc;
-}
 
 /* Draggable area indicator */
 .future-popup::before {
@@ -390,7 +439,6 @@ body {
     position: relative;
     margin-top: 60px;
     padding-top: 40px;
-    border-top: 2px solid #000000;
 }
 
 .name-footer h1 {
@@ -493,8 +541,13 @@ body {
 
     .experience-popup li,
     .future-popup p,
-    .future-popup > ul > li {
-        font-size: 1rem;
+    .future-popup > ul > li,
+    .future-popup .plan-goal ul > li {
+        font-size: 0.95rem;
+    }
+    
+    .future-popup .plan-goal ul ul li {
+        font-size: 0.9rem;
     }
 }
 
@@ -564,6 +617,7 @@ body {
     .experience-popup li,
     .future-popup p,
     .future-popup > ul > li,
+    .future-popup .plan-goal ul > li,
     .experience-popup ul ul li,
     .future-popup .plan-goal ul ul li {
         font-size: 0.9rem;
@@ -650,6 +704,7 @@ body {
     .experience-popup li,
     .future-popup p,
     .future-popup > ul > li,
+    .future-popup .plan-goal ul > li,
     .experience-popup ul ul li,
     .future-popup .plan-goal ul ul li {
         font-size: 0.85rem;

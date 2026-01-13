@@ -611,9 +611,90 @@ function makeDraggable(popupElement) {
     popupElement.style.cursor = 'grab';
 }
 
+// 滑鼠追蹤效果
+function initCursorTrail() {
+    // 只在非觸控設備上啟用
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        return;
+    }
+    
+    const cursor = document.createElement('div');
+    cursor.className = 'cursor-trail';
+    document.body.appendChild(cursor);
+    
+    const trails = [];
+    const trailCount = 5; // 拖尾數量
+    
+    // 創建拖尾元素
+    for (let i = 0; i < trailCount; i++) {
+        const trail = document.createElement('div');
+        trail.className = 'cursor-trail trail';
+        trail.style.opacity = (trailCount - i) / trailCount * 0.6;
+        document.body.appendChild(trail);
+        trails.push(trail);
+    }
+    
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    const trailPositions = trails.map(() => ({ x: 0, y: 0 }));
+    
+    // 更新主游標位置
+    function updateCursor(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    }
+    
+    // 動畫循環
+    function animate() {
+        // 平滑移動主游標
+        cursorX += (mouseX - cursorX) * 0.3;
+        cursorY += (mouseY - cursorY) * 0.3;
+        cursor.style.left = cursorX + 'px';
+        cursor.style.top = cursorY + 'px';
+        
+        // 更新拖尾位置
+        trails.forEach((trail, index) => {
+            const prevIndex = index === 0 ? -1 : index - 1;
+            const targetX = prevIndex === -1 ? cursorX : trailPositions[prevIndex].x;
+            const targetY = prevIndex === -1 ? cursorY : trailPositions[prevIndex].y;
+            
+            trailPositions[index].x += (targetX - trailPositions[index].x) * 0.4;
+            trailPositions[index].y += (targetY - trailPositions[index].y) * 0.4;
+            
+            trail.style.left = trailPositions[index].x + 'px';
+            trail.style.top = trailPositions[index].y + 'px';
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    // 監聽滑鼠移動
+    document.addEventListener('mousemove', updateCursor);
+    
+    // 開始動畫
+    animate();
+    
+    // 隱藏默認游標
+    document.body.style.cursor = 'none';
+    
+    // 在可點擊元素上顯示適當的游標並放大效果
+    const clickableElements = document.querySelectorAll('a, button, .year-item, .future-item, .popup-close-btn');
+    clickableElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1.3)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
+    });
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     initTimeline();
     initFuture();
     initOverlay();
+    initCursorTrail();
 });
