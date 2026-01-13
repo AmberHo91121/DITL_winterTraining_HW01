@@ -15,7 +15,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 40px;
+    padding: 20px;
     position: relative;
     min-height: 100vh;
 }
@@ -64,7 +64,6 @@ body {
     max-width: 300px;
     height: auto;
     display: block;
-    border-radius: 8px;
 }
 
 /* Experience Section (Middle Left) */
@@ -128,23 +127,22 @@ body {
 
 /* Experience Popup */
 .experience-popup {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
     background-color: #000000;
     color: #ffffff;
     padding: 20px;
     padding-top: 50px;
-    border-radius: 8px;
     min-width: 400px;
     max-width: min(600px, calc(100vw - 40px));
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 1000;
-    margin-top: 20px;
+    margin-top: 0;
     max-height: calc(100vh - 40px);
     overflow-y: auto;
 }
@@ -152,7 +150,6 @@ body {
 .experience-popup.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
 }
 
 .experience-popup .popup-content {
@@ -160,10 +157,27 @@ body {
     border: none;
 }
 
+/* Draggable area indicator */
+.experience-popup::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    cursor: grab;
+    z-index: 1;
+}
+
+.experience-popup:active::before {
+    cursor: grabbing;
+}
+
 .experience-popup h3 {
     font-size: 1.1rem;
     margin-bottom: 15px;
     color: #ffffff;
+    font-weight: normal;
 }
 
 .experience-popup .period {
@@ -197,6 +211,11 @@ body {
     margin-left: 20px;
 }
 
+.experience-popup ul ul li {
+    font-size: 1.1rem;
+    color: #cccccc;
+}
+
 /* Future Section */
 .future-section {
     position: relative;
@@ -227,23 +246,22 @@ body {
 
 /* Future Popup */
 .future-popup {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
     background-color: #000000;
     color: #ffffff;
-    padding: 30px;
+    padding: 20px;
     padding-top: 50px;
-    border-radius: 8px;
-    min-width: 500px;
-    max-width: min(700px, calc(100vw - 40px));
+    min-width: 400px;
+    max-width: min(600px, calc(100vw - 40px));
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 1000;
-    margin-top: 20px;
+    margin-top: 0;
     max-height: calc(100vh - 40px);
     overflow-y: auto;
 }
@@ -251,34 +269,37 @@ body {
 .future-popup.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
 }
 
 .future-popup h2 {
     font-size: 1.1rem;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     color: #ffffff;
-    border-bottom: 2px solid #ff6b35;
-    padding-bottom: 10px;
+    font-weight: normal;
 }
 
 .future-popup h3 {
     font-size: 1.1rem;
-    margin-top: 25px;
     margin-bottom: 15px;
     color: #ffffff;
+    font-weight: normal;
 }
 
 .future-popup p {
     font-size: 1.1rem;
     margin-bottom: 10px;
     color: #ffffff;
+    font-weight: normal;
+}
+
+.future-popup p strong {
+    font-weight: bold;
+    color: #ffffff;
 }
 
 .future-popup ul {
     list-style: none;
     padding-left: 0;
-    margin-top: 10px;
 }
 
 .future-popup > ul > li {
@@ -300,26 +321,22 @@ body {
     margin-top: 20px;
     padding: 15px;
     background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
     border: none;
 }
 
 .future-popup .plan-goal h3 {
     margin-top: 0;
+    margin-bottom: 15px;
 }
 
 .future-popup .plan-goal ul {
     margin-left: 0;
+    margin-top: 0;
 }
 
 .future-popup .plan-goal ul ul {
     margin-left: 20px;
-    margin-top: 5px;
-}
-
-.future-popup .plan-goal ul ul li {
-    font-size: 1.1rem;
-    color: #cccccc;
+    margin-top: 10px;
 }
 
 /* Popup Close Button */
@@ -350,6 +367,22 @@ body {
 .future-popup .plan-goal ul ul li {
     font-size: 1.1rem;
     color: #cccccc;
+}
+
+/* Draggable area indicator */
+.future-popup::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    cursor: grab;
+    z-index: 1;
+}
+
+.future-popup:active::before {
+    cursor: grabbing;
 }
 
 /* Name Footer (Bottom Left) */
@@ -455,6 +488,7 @@ body {
     .future-popup h2,
     .future-popup h3 {
         font-size: 1rem;
+        margin-bottom: 15px;
     }
 
     .experience-popup li,
@@ -515,28 +549,22 @@ body {
     .future-popup {
         min-width: calc(100vw - 30px);
         max-width: calc(100vw - 30px);
-        left: 50% !important;
-        transform: translateX(-50%) translateY(-10px);
         position: fixed;
-        top: 50%;
         margin-top: 0;
         max-height: 80vh;
-    }
-
-    .experience-popup.show,
-    .future-popup.show {
-        transform: translateX(-50%) translateY(-50%);
     }
 
     .experience-popup h3,
     .future-popup h2,
     .future-popup h3 {
         font-size: 0.95rem;
+        margin-bottom: 15px;
     }
 
     .experience-popup li,
     .future-popup p,
     .future-popup > ul > li,
+    .experience-popup ul ul li,
     .future-popup .plan-goal ul ul li {
         font-size: 0.9rem;
     }
@@ -622,6 +650,7 @@ body {
     .experience-popup li,
     .future-popup p,
     .future-popup > ul > li,
+    .experience-popup ul ul li,
     .future-popup .plan-goal ul ul li {
         font-size: 0.85rem;
         margin-bottom: 8px;
