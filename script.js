@@ -80,6 +80,13 @@ const experienceData = {
     ]
 };
 
+// Helper function to encode URL paths for GitHub Pages compatibility
+function encodeImagePath(path) {
+    // Split path into parts and encode each part separately
+    const parts = path.split('/');
+    return parts.map(part => encodeURIComponent(part)).join('/');
+}
+
 // Works data
 const worksData = {
     inlife: {
@@ -593,7 +600,7 @@ function showWorksPopup(work, workElement) {
     currentWorkIndex = 0;
 
     const total = data.images.length;
-    const initialSrc = data.images[currentWorkIndex];
+    const initialSrc = encodeImagePath(data.images[currentWorkIndex]);
 
     const html = `
         <div class="works-popup-inner">
@@ -686,7 +693,7 @@ function updateWorksViewer() {
     const clampedIndex = ((currentWorkIndex % total) + total) % total;
     currentWorkIndex = clampedIndex;
 
-    imgEl.src = data.images[currentWorkIndex];
+    imgEl.src = encodeImagePath(data.images[currentWorkIndex]);
     counterEl.textContent = `${currentWorkIndex + 1} / ${total}`;
 }
 
